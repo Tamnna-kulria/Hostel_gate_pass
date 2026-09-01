@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
-
+import AIAssistant from "../components/AIAssistant";
 
 function StudentDashboard() {
   return (
@@ -8,26 +8,51 @@ function StudentDashboard() {
       <Navbar title="Student Dashboard" />
 
       <div className="dashboard-page">
-        <h1>Student Dashboard</h1>
-        <p>Here student will create and track gate pass requests.</p>
 
-        <div className="dashboard-grid">
+        <div className="student-layout">
 
-        <Link to="/student/create-request" className="dashboard-card card-link">
-            <h2>Create Request</h2>
-            <p>Apply for a hostel gate pass.</p>
-        </Link>
+          {/* LEFT SIDE */}
+          <div>
+            <h1>Student Dashboard</h1>
 
-          <Link to="/student/my-requests" className="dashboard-card card-link">
-            <h2>My Requests</h2>
-            <p>Track pending, approved, and rejected requests.</p>
-        </Link>
+            <p>
+              Here student will create and track gate pass requests.
+            </p>
 
-         <Link to="/student/profile" className="dashboard-card card-link">
-            <h2>My Profile</h2>
-            <p>View college ID, room number, and parent details.</p>
-          </Link>
+            <div className="dashboard-grid">
+
+              <Link
+                to="/student/create-request"
+                className="dashboard-card card-link"
+              >
+                <h2>Create Request</h2>
+                <p>Apply for a hostel gate pass.</p>
+              </Link>
+
+              <Link
+                to="/student/my-requests"
+                className="dashboard-card card-link"
+              >
+                <h2>My Requests</h2>
+                <p>Track pending, approved, and rejected requests.</p>
+              </Link>
+
+              <Link
+                to="/student/profile"
+                className="dashboard-card card-link"
+              >
+                <h2>My Profile</h2>
+                <p>View college ID, room number, and parent details.</p>
+              </Link>
+
+            </div>
+          </div>
+
+          {/* RIGHT SIDE */}
+          <AIAssistant />
+
         </div>
+
       </div>
     </>
   );

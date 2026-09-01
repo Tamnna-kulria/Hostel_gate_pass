@@ -257,3 +257,24 @@ export function updateStudentProfile(profileId, formData) {
     body: JSON.stringify(formData)
   });
 }
+
+export async function askAssistant(question) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_BASE_URL}/assistant/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ question })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Assistant failed");
+  }
+
+  return data;
+}

@@ -11,7 +11,7 @@ import GatePassRequest from "./models/GatePassRequest.js";
 import gatePassRoutes from "./routes/gatePassRoutes.js";
 import auditRoutes from "./routes/auditRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
-
+import assistantRoutes from "./routes/assistantRoutes.js";
 
 
 dotenv.config();
@@ -27,6 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/gate-passes", gatePassRoutes);
 app.use("/api/audit-logs", auditRoutes); 
 app.use("/api/reports", reportRoutes);
+app.use("/api/assistant", assistantRoutes);
 
 app.get("/", (req, res) => {
   res.send("Smart Hostel Gate Pass backend is running");
