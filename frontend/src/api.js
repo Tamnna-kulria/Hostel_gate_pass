@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://hostel-gate-pass-7ogt.onrender.com";
+const API_BASE_URL = "https://hostel-gate-pass-7ogt.onrender.com/api";
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
