@@ -139,7 +139,7 @@ export async function createGatePassRequest(req, res) {
 
     const parentApprovalToken = generateParentApprovalToken();
     const parentOtp = generateOtp();
-    const parentApprovalUrl = `http://hostel-gate-pass-7ogt.onrender.com/parent/approve/${parentApprovalToken}`;
+    const parentApprovalUrl = `https://hostel-gate-pass-nine.vercel.app/parent/approve/${parentApprovalToken}`;
 
 
 
