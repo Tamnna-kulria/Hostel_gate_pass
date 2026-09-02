@@ -139,7 +139,7 @@ export async function createGatePassRequest(req, res) {
 
     const parentApprovalToken = generateParentApprovalToken();
     const parentOtp = generateOtp();
-    const parentApprovalUrl = `http://localhost:5173/parent/approve/${parentApprovalToken}`;
+    const parentApprovalUrl = `http://hostel-gate-pass-7ogt.onrender.com/parent/approve/${parentApprovalToken}`;
 
 
 
@@ -529,7 +529,7 @@ export async function wardenApproveGatePass(req, res) {
     });
 
 
-    const qrVerificationUrl = `http://localhost:5173/guard/verify/${request.qrToken}`;
+    const qrVerificationUrl = `http://hostel-gate-pass-7ogt.onrender.com/guard/verify/${request.qrToken}`;
     const qrCodeImage = await generateQrCodeImage(qrVerificationUrl);
 
     res.json({
