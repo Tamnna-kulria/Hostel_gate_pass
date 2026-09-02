@@ -90,14 +90,14 @@ function MyRequests() {
 
                     <div className="qr-box">
                     <QRCodeCanvas
-                        value={`http://localhost:5173/guard/verify/${request.qrToken}`}
+                        value={`http://hostel-gate-pass-nine.vercel.app/guard/verify/${request.qrToken}`}
                         size={180}
                         level="H"
                         includeMargin={true}
                     />
                     </div>
 
-                    <p>http://localhost:5173/guard/verify/{request.qrToken}</p>
+                    <p>http://hostel-gate-pass-nine.vercel.app/guard/verify/{request.qrToken}</p>
                 </div>
                 )}
             </div>
