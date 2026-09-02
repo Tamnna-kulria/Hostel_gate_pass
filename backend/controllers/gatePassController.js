@@ -529,7 +529,7 @@ export async function wardenApproveGatePass(req, res) {
     });
 
 
-    const qrVerificationUrl = `http://hostel-gate-pass-7ogt.onrender.com/guard/verify/${request.qrToken}`;
+    const qrVerificationUrl = `http://hostel-gate-pass-nine.vercel.app/guard/verify/${request.qrToken}`;
     const qrCodeImage = await generateQrCodeImage(qrVerificationUrl);
 
     res.json({
@@ -556,6 +556,7 @@ export async function verifyQrToken(req, res) {
       });
     }
 
+    // Check QR expiry
     if (request.qrExpiresAt && request.qrExpiresAt < new Date()) {
       request.status = "Expired";
       await request.save();
@@ -566,7 +567,8 @@ export async function verifyQrToken(req, res) {
       });
     }
 
-    if (request.status !== "QR Generated") {
+    // QR can be scanned for both Exit and Return
+    if (!["QR Generated", "Exited"].includes(request.status)) {
       return res.status(400).json({
         message: `QR cannot be used when status is ${request.status}`,
         request: addIndianTimes(request)
@@ -574,15 +576,20 @@ export async function verifyQrToken(req, res) {
     }
 
     res.json({
-      message: "QR token is valid",
+      message:
+        request.status === "QR Generated"
+          ? "QR token is valid. Student is ready for exit verification."
+          : "QR token is valid. Student has exited and is ready for return verification.",
       request: addIndianTimes(request)
     });
+
   } catch (error) {
     res.status(500).json({
       message: error.message
     });
   }
 }
+
 export async function markStudentExit(req, res) {
   try {
     const request = await findRequestByQrToken(req.params.qrToken);
