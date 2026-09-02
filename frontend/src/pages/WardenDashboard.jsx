@@ -158,7 +158,7 @@ function WardenDashboard() {
               {request.qrToken && (
                 <div className="mini-section">
                   <strong>QR Link:</strong>
-                  <p>http://localhost:5173/guard/verify/{request.qrToken}</p>
+                  <p>http://hostel-gate-pass-nine.vercel.app/guard/verify/{request.qrToken}</p>
                 </div>
               )}
 
