@@ -12,11 +12,12 @@ export async function createEmbedding(text) {
   const apiKey = getGeminiKey();
 
   const response = await fetch(
-    `${GEMINI_BASE_URL}/models/gemini-embedding-001:embedContent?key=${apiKey}`,
+    `${GEMINI_BASE_URL}/models/gemini-embedding-001:embedContent`,
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
       },
       body: JSON.stringify({
         model: "models/gemini-embedding-001",
@@ -30,11 +31,13 @@ export async function createEmbedding(text) {
   const data = await response.json();
 
   if (!response.ok) {
+    console.error("Gemini embedding error:", data);
     throw new Error(data.error?.message || "Embedding failed");
   }
 
   return data.embedding.values;
 }
+
 
 export async function generateAnswer(prompt) {
   const apiKey = getGeminiKey();

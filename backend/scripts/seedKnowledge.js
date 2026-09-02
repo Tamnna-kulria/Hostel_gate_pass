@@ -22,20 +22,25 @@ const documents = [
       "Warden can approve only after parent approval. After warden approval, QR code is generated for guard verification."
   },
   {
-  title: "QR Exit Verification",
-  content:
-    "Student uses the generated QR code only for exit from the hostel. The guard scans the student's QR code to verify the gate pass and mark the student's exit. The QR code is valid for one-time use only."
-},
-{
-  title: "Return Verification",
-  content:
-    "For returning to the hostel, the guard uses the generated return link and return code. The student does not use the QR code for return. The return code is valid for one-time use only."
-},
-{
-  title: "Exit and Return Security",
-  content:
-    "The exit QR code and return code are separate one-time-use credentials. After successful exit verification, the QR cannot be reused. After successful return verification, the return code cannot be reused."
-},
+    title: "Exit Verification Procedure",
+    content:
+      "When a student wants to leave the hostel, the student displays the approved gate pass QR code to the guard. The guard scans the QR code. The system verifies the QR token and displays the student's name, college ID, room number, destination, reason, approved timings, and gate pass status. If the request status is QR Generated, the guard can select Mark Exit. The system records the exit time and changes the request status to Exited."
+  },
+ {
+    title: "Return Verification Procedure",
+    content:
+      "When a student returns to the hostel, the guard scans the same approved gate pass QR code again. The system verifies that the student's current gate pass status is Exited. The student's gate pass details and exit information are displayed to the guard. The guard selects Mark Return. The system records the actual return time and changes the request status to Returned."
+  },
+  {
+    title: "Late Return Rule",
+    content:
+      "The system compares the student's actual return time with the expected return time specified in the gate pass request. If the student returns after the expected return time, the system marks the request as a late return and calculates the number of minutes the student was late. If the student returns on or before the expected return time, the request is not marked as a late return."
+  },
+   {
+    title: "Parent OTP Verification",
+    content:
+      "The parent receives an OTP through the registered parent email address after a student creates a gate pass request. The parent must enter the OTP on the parent approval page. The OTP is required to verify that the parent is approving the request. The OTP has a limited validity period. After successful OTP verification, the parent can approve or reject the gate pass request. Students should not share the parent OTP with other people."
+  },
   {
     title: "Security Rule",
     content:
