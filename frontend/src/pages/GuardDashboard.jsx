@@ -1,40 +1,20 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import {
-  markStudentExit,
-  markStudentReturn,
-  verifyQrToken
-} from "../api";
+import { getAllGatePassRequests } from "../api";
 
 function GuardDashboard() {
-  const [qrInput, setQrInput] = useState("");
-  const [verifiedRequest, setVerifiedRequest] = useState(null);
-  const [message, setMessage] = useState("");
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  function extractQrToken(value) {
-    if (value.includes("/guard/verify/")) {
-      return value.split("/guard/verify/")[1];
-    }
-
-    return value.trim();
-  }
-
-  async function handleVerify(event) {
-    event.preventDefault();
-
+  async function loadRequests() {
     try {
       setLoading(true);
       setError("");
-      setMessage("");
-      setVerifiedRequest(null);
 
-      const qrToken = extractQrToken(qrInput);
-      const data = await verifyQrToken(qrToken);
-
-      setMessage(data.message);
-      setVerifiedRequest(data.request);
+      const data = await getAllGatePassRequests();
+      setRequests(data.requests || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -42,107 +22,217 @@ function GuardDashboard() {
     }
   }
 
-  async function handleExit() {
-    try {
-      setLoading(true);
-      setError("");
+  useEffect(() => {
+    loadRequests();
+  }, []);
 
-      const qrToken = extractQrToken(qrInput);
-      const data = await markStudentExit(qrToken);
+  const today = new Date().toDateString();
 
-      setMessage(data.message);
-      setVerifiedRequest(data.request);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const todayExits = requests.filter((request) => {
+    if (!request.exitTime) return false;
 
-  async function handleReturn() {
-    try {
-      setLoading(true);
-      setError("");
+    return new Date(request.exitTime).toDateString() === today;
+  }).length;
 
-      const qrToken = extractQrToken(qrInput);
-      const data = await markStudentReturn(qrToken);
+  const todayReturns = requests.filter((request) => {
+    if (!request.returnTime) return false;
 
-      setMessage(data.message);
-      setVerifiedRequest(data.request);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    return new Date(request.returnTime).toDateString() === today;
+  }).length;
+
+  const currentlyOutside = requests.filter(
+    (request) => request.status === "Exited"
+  ).length;
+
+  const lateReturns = requests.filter(
+    (request) => request.isLateReturn === true
+  ).length;
 
   return (
     <>
       <Navbar title="Gate Guard Dashboard" />
 
-      <div className="form-page">
-        <div className="form-card">
-          <h1>Verify Gate Pass QR</h1>
-          <p>Paste QR token or full QR verification link.</p>
+      <div className="dashboard-page">
 
-          {error && <div className="error-message">{error}</div>}
-          {message && <div className="success-message">{message}</div>}
+        {/* HEADER */}
+        <div>
+          <h1>Gate Guard Dashboard</h1>
 
-          <form onSubmit={handleVerify}>
-            <label>QR Token / Verification Link</label>
-            <input
-              type="text"
-              placeholder="Paste QR token or http://localhost:5173/guard/verify/..."
-              value={qrInput}
-              onChange={(event) => setQrInput(event.target.value)}
-              required
-            />
+          <p>
+            Monitor student gate pass activity and verify student
+            exit and return at the hostel gate.
+          </p>
+        </div>
 
-            <button type="submit" disabled={loading}>
-              {loading ? "Checking..." : "Verify QR"}
-            </button>
-          </form>
+        {/* ERROR */}
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
-          {verifiedRequest && (
-            <div className="result-card">
-              <h2>Gate Pass Details</h2>
+        {/* STATISTICS */}
+        <div className="dashboard-grid">
 
-              <div className="request-details-grid">
-                <p><strong>Status:</strong> {verifiedRequest.status}</p>
-                <p><strong>Student:</strong> {verifiedRequest.student?.name}</p>
-                <p><strong>College ID:</strong> {verifiedRequest.studentProfile?.collegeId}</p>
-                <p><strong>Room:</strong> {verifiedRequest.studentProfile?.roomNumber}</p>
-                <p><strong>Destination:</strong> {verifiedRequest.destination}</p>
-                <p><strong>Reason:</strong> {verifiedRequest.reason}</p>
-                <p><strong>Out Time:</strong> {verifiedRequest.indianTimes?.outTime}</p>
-                <p><strong>Expected In:</strong> {verifiedRequest.indianTimes?.expectedInTime}</p>
-                <p><strong>Exit Time:</strong> {verifiedRequest.indianTimes?.exitTime || "Not exited yet"}</p>
-                <p><strong>Return Time:</strong> {verifiedRequest.indianTimes?.returnTime || "Not returned yet"}</p>
-                <p><strong>Late Return:</strong> {verifiedRequest.isLateReturn ? "Yes" : "No"}</p>
-                <p><strong>Late By:</strong> {verifiedRequest.lateByMinutes} minutes</p>
-              </div>
+          <div className="dashboard-card">
+            <h2>Today's Exits</h2>
 
-              <div className="action-row">
-                <button
-                  onClick={handleExit}
-                  disabled={loading || verifiedRequest.status !== "QR Generated"}
-                >
-                  Mark Exit
-                </button>
+            <p className="dashboard-number">
+              {loading ? "..." : todayExits}
+            </p>
 
-                <button
-                  onClick={handleReturn}
-                  disabled={loading || verifiedRequest.status !== "Exited"}
-                >
-                  Mark Return
-                </button>
-              </div>
+            <p>
+              Students who exited today.
+            </p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>Today's Returns</h2>
+
+            <p className="dashboard-number">
+              {loading ? "..." : todayReturns}
+            </p>
+
+            <p>
+              Students who returned today.
+            </p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>Currently Outside</h2>
+
+            <p className="dashboard-number">
+              {loading ? "..." : currentlyOutside}
+            </p>
+
+            <p>
+              Students currently outside.
+            </p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>Late Returns</h2>
+
+            <p className="dashboard-number">
+              {loading ? "..." : lateReturns}
+            </p>
+
+            <p>
+              Students who returned late.
+            </p>
+          </div>
+
+        </div>
+
+        {/* QR INSTRUCTION */}
+        <div
+          className="dashboard-card"
+          style={{
+            marginTop: "24px",
+            textAlign: "center"
+          }}
+        >
+          <h2>Gate Pass Verification</h2>
+
+          <p>
+            Ask the student to display their approved gate pass QR code.
+          </p>
+
+          <p>
+            Scan the QR code using the phone camera.
+          </p>
+
+          <div
+            className="info-message"
+            style={{ marginTop: "20px" }}
+          >
+            After scanning, the student's gate pass details and
+            Exit / Return options will automatically appear.
+          </div>
+        </div>
+
+        {/* STUDENTS CURRENTLY OUTSIDE */}
+        <div style={{ marginTop: "30px" }}>
+
+          <h2>Students Currently Outside</h2>
+
+          {loading && (
+            <div className="info-message">
+              Loading...
             </div>
           )}
+
+          {!loading && currentlyOutside === 0 && (
+            <div className="info-message">
+              No students are currently outside the hostel.
+            </div>
+          )}
+
+          {!loading &&
+            requests
+              .filter((request) => request.status === "Exited")
+              .map((request) => (
+                <div
+                  className="request-card"
+                  key={request._id}
+                >
+                  <div className="request-card-header">
+
+                    <div>
+                      <h2>
+                        {request.student?.name || "Student"}
+                      </h2>
+
+                      <p>
+                        College ID:{" "}
+                        {request.studentProfile?.collegeId || "N/A"}
+                      </p>
+
+                      <p>
+                        Room:{" "}
+                        {request.studentProfile?.roomNumber || "N/A"}
+                      </p>
+                    </div>
+
+                    <span className="status-badge exited">
+                      Exited
+                    </span>
+
+                  </div>
+
+                  <div className="request-details-grid">
+
+                    <p>
+                      <strong>Destination:</strong>{" "}
+                      {request.destination || "N/A"}
+                    </p>
+
+                    <p>
+                      <strong>Reason:</strong>{" "}
+                      {request.reason || "N/A"}
+                    </p>
+
+                    <p>
+                      <strong>Expected In:</strong>{" "}
+                      {request.indianTimes?.expectedInTime || "N/A"}
+                    </p>
+
+                    <p>
+                      <strong>Exit Time:</strong>{" "}
+                      {request.indianTimes?.exitTime || "N/A"}
+                    </p>
+
+                  </div>
+
+                </div>
+              ))}
+
         </div>
+
       </div>
     </>
   );
 }
 
 export default GuardDashboard;
+
