@@ -23,7 +23,7 @@ function GuardDashboard() {
               textAlign: "center"
             }}
           >
-            <h2>📷 Scan Student QR Code</h2>
+            <h2> Scan Student QR Code</h2>
 
             <p style={{ marginTop: "10px" }}>
               Ask the student to show their approved gate pass QR code.
@@ -81,7 +81,7 @@ function GuardDashboard() {
               textAlign: "center"
             }}
           >
-            No QR token needs to be entered manually.
+            
           </div>
 
         </div>
