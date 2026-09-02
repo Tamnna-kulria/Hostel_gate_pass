@@ -3,7 +3,7 @@ import GatePassRequest from "../models/GatePassRequest.js";
 import StudentProfile from "../models/StudentProfile.js";
 import { formatIndianTime } from "../utils/dateUtils.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import { generateQrCodeImage } from "../utils/qrCodeUtils.js";
+import { generateQrCodeImage } from "../utils/qrcodeUtils.js";
 import { createAuditLog } from "../utils/auditLogger.js";
 import { analyzeGatePassRisk } from "../utils/aiRiskAnalyzer.js";
 

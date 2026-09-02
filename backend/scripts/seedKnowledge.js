@@ -22,15 +22,20 @@ const documents = [
       "Warden can approve only after parent approval. After warden approval, QR code is generated for guard verification."
   },
   {
-    title: "QR Verification",
-    content:
-      "Student shows QR code to gate guard. Guard scans QR, verifies the pass, marks exit, and later marks return."
-  },
-  {
-    title: "Return Rule",
-    content:
-      "Student must return before the approved expected in time. Late return can be reported to warden or admin."
-  },
+  title: "QR Exit Verification",
+  content:
+    "Student uses the generated QR code only for exit from the hostel. The guard scans the student's QR code to verify the gate pass and mark the student's exit. The QR code is valid for one-time use only."
+},
+{
+  title: "Return Verification",
+  content:
+    "For returning to the hostel, the guard uses the generated return link and return code. The student does not use the QR code for return. The return code is valid for one-time use only."
+},
+{
+  title: "Exit and Return Security",
+  content:
+    "The exit QR code and return code are separate one-time-use credentials. After successful exit verification, the QR cannot be reused. After successful return verification, the return code cannot be reused."
+},
   {
     title: "Security Rule",
     content:
