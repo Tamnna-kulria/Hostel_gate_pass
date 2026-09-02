@@ -38,7 +38,7 @@ export async function createEmbedding(text) {
 
 export async function generateAnswer(prompt) {
   const apiKey = getGeminiKey();
-  const model = process.env.GEMINI_CHAT_MODEL || "gemini-3.5-flash-lite";
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
   const response = await fetch(
     `${GEMINI_BASE_URL}/models/${model}:generateContent?key=${apiKey}`,
